@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 
 export class UpdateUserDto {
   @ApiProperty()
@@ -7,9 +7,4 @@ export class UpdateUserDto {
   @IsString()
   @Length(4, 20)
   username: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsBoolean()
-  freeze: boolean;
 }

@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-interface Config {
+export interface IConfig {
   VERSION: string;
   ORIGINS: string[];
   APP_NAME: string[];
@@ -11,7 +11,7 @@ interface Config {
   MONGO_URL: string;
 }
 
-const CONFIG: Config = {
+const CONFIG: IConfig = {
   VERSION: process.env.VERSION || '1.0.0',
   ORIGINS: process.env.ORIGINS ? process.env.ORIGINS.split(',') : [],
   APP_NAME: process.env.APP_NAME ? process.env.APP_NAME.split(',') : [],

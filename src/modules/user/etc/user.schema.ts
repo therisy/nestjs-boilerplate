@@ -20,9 +20,6 @@ export class User extends Document {
   @Prop({ required: true })
   ip: string;
 
-  @Prop({ required: true, default: false })
-  freeze: boolean;
-
   @Prop()
   createdAt: number;
 

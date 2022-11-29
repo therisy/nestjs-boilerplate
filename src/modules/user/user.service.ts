@@ -13,22 +13,17 @@ import { CreateUserDto } from './etc/create-user.dto';
 import { RoleType } from '@enums/role.enum';
 import { UpdateUserDto } from '@modules/user/etc/update-user.dto';
 import CONFIG from '@config';
-import { TransactionService } from '@modules/transaction/transaction.service';
-import { Transaction } from '@modules/transaction/etc/transaction.schema';
-import { ActionType } from '@enums/action.enum';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') private readonly model: Model<User>,
-    @InjectModel('Transaction')
-    private readonly transactionModel: Model<Transaction>,
     private readonly httpService: HttpService,
-    private readonly transactionService: TransactionService,
   ) {}
 
   async create(dto: CreateUserDto, req: FastifyRequest): Promise<boolean> {
     dto.username = dto.username.toLowerCase();
+
     const exist = await this.model.findOne({ username: dto.username });
     if (exist) throw new ConflictException('Username already exists');
 
@@ -41,14 +36,6 @@ export class UserService {
     user.password = await bcrypt.hash(user.password, 10);
     user.ip = req.ip;
 
-    const transaction = new this.transactionModel({
-      user: user._id,
-      ip: user.ip,
-      action: ActionType.LOGIN,
-    });
-
-    await this.transactionService.create(transaction);
-
     await user.save();
 
     return true;
@@ -57,20 +44,8 @@ export class UserService {
   async getMe(user) {
     return Object.assign(user, {
       password: undefined,
-      freeze: undefined,
       updatedAt: undefined,
     });
-  }
-
-  async removeFreeze(user: User): Promise<User> {
-    return this.model.findOneAndUpdate(
-      {
-        _id: user._id,
-        freeze: true,
-      },
-      { freeze: false },
-      { new: true },
-    );
   }
 
   async getByUsernameAsAdmin(username: string): Promise<User> {
@@ -80,13 +55,12 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<User> {
-    return this.model.findOne({ _id: id, freeze: { $ne: true } });
+    return this.model.findOne({ _id: id });
   }
 
   async update(user: User, dto: UpdateUserDto): Promise<User> {
     const exist = await this.model.findOne({
       username: dto.username,
-      freeze: { $ne: true },
     });
     if (exist && exist.id !== user.id)
       throw new ConflictException('Username already exists');
@@ -95,7 +69,7 @@ export class UserService {
       {
         _id: user._id,
       },
-      { username: dto.username, freeze: dto.freeze },
+      { username: dto.username },
       { new: true },
     );
   }

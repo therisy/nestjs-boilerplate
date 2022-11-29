@@ -1,7 +1,6 @@
-import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { CreateSessionDto } from './etc/create-session.dto';
-import { JwtGuard } from '@guards/jwt.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('session')

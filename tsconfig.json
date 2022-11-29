@@ -20,6 +20,7 @@
     "paths": {
       "@config": ["src/config"],
       "@modules/*": ["src/modules/*"],
+      "@core/*": ["src/core/*"],
       "@enums/*": ["src/core/enums/*"],
       "@decorators/*": ["src/core/decorators/*"],
       "@strategies/*": ["src/core/strategies/*"],

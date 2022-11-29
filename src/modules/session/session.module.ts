@@ -6,17 +6,11 @@ import { HttpModule } from '@nestjs/axios';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '@modules/user/user.module';
 import { JwtStrategy } from '@strategies/jwt.strategy';
-import { TransactionModule } from '@modules/transaction/transaction.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TransactionSchema } from '@modules/transaction/etc/transaction.schema';
 import CONFIG from '@config';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    MongooseModule.forFeature([
-      { name: 'Transaction', schema: TransactionSchema },
-    ]),
     JwtModule.register({
       secret: CONFIG.SECRET,
       signOptions: {
@@ -24,7 +18,6 @@ import CONFIG from '@config';
       },
     }),
     UserModule,
-    TransactionModule,
     HttpModule,
   ],
   controllers: [SessionController],
